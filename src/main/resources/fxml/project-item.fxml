@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:id="projectCard"
+      fx:controller="com.dockermanager.controller.ProjectItemController"
+      styleClass="project-card"
+      spacing="10">
+    
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+    
+    <!-- Project Header -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label fx:id="projectNameLabel" text="Project Name" styleClass="project-name"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="statusIndicator" text="●" styleClass="status-indicator"/>
+    </HBox>
+    
+    <!-- Project Info -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label fx:id="projectTypeLabel" text="Type" styleClass="type-badge-small"/>
+        <Label fx:id="portLabel" text="Port: 3000" styleClass="info-label"/>
+    </HBox>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10">
+        <Button fx:id="runButton" text="▶ Run" onAction="#handleRun" styleClass="run-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <Button fx:id="stopButton" text="■ Stop" onAction="#handleStop" styleClass="stop-button" HBox.hgrow="ALWAYS" maxWidth="Infinity" visible="false" managed="false"/>
+    </HBox>
+    
+</VBox>
+

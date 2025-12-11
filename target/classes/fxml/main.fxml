@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.dockermanager.controller.MainController"
+            prefHeight="700.0" prefWidth="1200.0"
+            styleClass="root">
+
+    <!-- Top Menu Bar -->
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="Add Project" onAction="#handleAddProject" fx:id="addProjectMenuItem"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Preferences" onAction="#handlePreferences"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Exit" onAction="#handleExit"/>
+                </Menu>
+                <Menu text="Docker">
+                    <MenuItem text="Check Installation" onAction="#handleCheckDocker"/>
+                    <MenuItem text="Stop All Containers" onAction="#handleStopAll"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="About" onAction="#handleAbout"/>
+                </Menu>
+            </MenuBar>
+            
+            <!-- Status Bar -->
+            <HBox styleClass="status-bar" spacing="10" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="5" right="10" bottom="5" left="10"/>
+                </padding>
+                <Label text="Docker Status:"/>
+                <Label fx:id="dockerStatusLabel" text="Checking..." styleClass="status-label"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content - Split Panel -->
+    <center>
+        <SplitPane dividerPositions="0.35" styleClass="main-split">
+            
+            <!-- Left Panel - Projects List -->
+            <VBox styleClass="projects-panel">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel-header">
+                    <Label text="Projects" styleClass="panel-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="+ Add Project" onAction="#handleAddProject" styleClass="add-button"/>
+                </HBox>
+                
+                <Separator>
+                    <VBox.margin>
+                        <Insets top="10" bottom="10"/>
+                    </VBox.margin>
+                </Separator>
+                
+                <ScrollPane fitToWidth="true" styleClass="projects-scroll" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="projectsContainer" spacing="10" styleClass="projects-container">
+                        <padding>
+                            <Insets top="5" right="5" bottom="5" left="5"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Right Panel - Project Settings -->
+            <VBox styleClass="settings-panel">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                
+                <Label text="Project Settings" styleClass="panel-title"/>
+                
+                <Separator>
+                    <VBox.margin>
+                        <Insets top="10" bottom="10"/>
+                    </VBox.margin>
+                </Separator>
+                
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="settings-scroll">
+                    <VBox fx:id="settingsContainer" spacing="15" styleClass="settings-container">
+                        <padding>
+                            <Insets top="5" right="5" bottom="5" left="5"/>
+                        </padding>
+                        
+                        <!-- No Project Selected Message -->
+                        <VBox fx:id="noProjectSelectedBox" alignment="CENTER" spacing="10" styleClass="no-selection-box">
+                            <VBox.margin>
+                                <Insets top="100"/>
+                            </VBox.margin>
+                            <Label text="No Project Selected" styleClass="no-selection-label"/>
+                            <Label text="Select a project from the left panel to view and edit its settings" 
+                                   styleClass="no-selection-sublabel" wrapText="true"/>
+                        </VBox>
+                        
+                        <!-- Settings Form (Initially Hidden) -->
+                        <VBox fx:id="settingsFormBox" spacing="15" visible="false" managed="false">
+                            
+                            <!-- Project Name -->
+                            <VBox spacing="5">
+                                <Label text="Project Name" styleClass="field-label"/>
+                                <TextField fx:id="projectNameField" promptText="Enter project name"/>
+                            </VBox>
+                            
+                            <!-- Project Path -->
+                            <VBox spacing="5">
+                                <Label text="Project Path" styleClass="field-label"/>
+                                <HBox spacing="10">
+                                    <TextField fx:id="projectPathField" HBox.hgrow="ALWAYS" editable="false"/>
+                                    <Button text="Browse..." onAction="#handleBrowseProjectPath"/>
+                                </HBox>
+                            </VBox>
+                            
+                            <!-- Project Type -->
+                            <VBox spacing="5">
+                                <Label text="Project Type" styleClass="field-label"/>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label fx:id="projectTypeLabel" text="Unknown" styleClass="type-badge"/>
+                                    <Label text="(Auto-detected)" styleClass="hint-label"/>
+                                </HBox>
+                            </VBox>
+                            
+                            <Separator/>
+                            
+                            <!-- Port Configuration -->
+                            <VBox spacing="5">
+                                <Label text="Port" styleClass="field-label"/>
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <TextField fx:id="portField" prefWidth="100" promptText="3000"/>
+                                    <Label text="(Auto-assigned if empty)" styleClass="hint-label"/>
+                                </HBox>
+                            </VBox>
+                            
+                            <Separator/>
+                            
+                            <!-- Environment Variables -->
+                            <VBox spacing="5">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="Environment Variables" styleClass="field-label"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="+ Add" onAction="#handleAddEnvVar" styleClass="small-button"/>
+                                </HBox>
+                                <VBox fx:id="envVarsContainer" spacing="5"/>
+                            </VBox>
+                            
+                            <Separator/>
+                            
+                            <!-- Docker Options -->
+                            <Label text="Docker Options" styleClass="section-label"/>
+                            
+                            <VBox spacing="5">
+                                <Label text="Memory Limit (MB)" styleClass="field-label"/>
+                                <TextField fx:id="memoryLimitField" promptText="512"/>
+                            </VBox>
+                            
+                            <VBox spacing="5">
+                                <Label text="CPU Limit" styleClass="field-label"/>
+                                <TextField fx:id="cpuLimitField" promptText="1.0"/>
+                            </VBox>
+                            
+                            <Separator/>
+                            
+                            <!-- Volume Mounts -->
+                            <VBox spacing="5">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label text="Volume Mounts" styleClass="field-label"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="+ Add" onAction="#handleAddVolumeMount" styleClass="small-button"/>
+                                </HBox>
+                                <VBox fx:id="volumeMountsContainer" spacing="5"/>
+                            </VBox>
+                            
+                            <Separator/>
+                            
+                            <!-- Action Buttons -->
+                            <HBox spacing="10" alignment="CENTER">
+                                <Button text="Save Settings" onAction="#handleSaveSettings" styleClass="primary-button"/>
+                                <Button text="Delete Project" onAction="#handleDeleteProject" styleClass="danger-button"/>
+                            </HBox>
+                            
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+            
+        </SplitPane>
+    </center>
+
+</BorderPane>
+
